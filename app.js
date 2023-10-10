@@ -8,6 +8,9 @@ const jwt = require("jsonwebtoken");
 
 const prisma = require("./libs/prisma");
 
+let tokenPrin = null;
+let userIDPrin = null;
+
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -26,7 +29,13 @@ app.post("/login", async (req, res) => {
     { uId, uName, exp: Date.now() + 60 * 1000 },
     process.env.NEXTAUTH_JWT_SECRET
   );
+  tokenPrin = token;
+  userIDPrin = uId;
   res.json({ token, email: user.email, name: user.name });
+});
+
+app.get("/token", (req, res) => {
+  res.json({ token: tokenPrin, userId: userIDPrin });
 });
 
 app.listen(3002, () => {
