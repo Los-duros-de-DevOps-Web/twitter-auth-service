@@ -26,7 +26,7 @@ app.post("/login", async (req, res) => {
     { uId, uName, exp: Date.now() + 60 * 1000 },
     process.env.NEXTAUTH_JWT_SECRET
   );
-  res.json({ token });
+  res.json({ token, email: user.email, name: user.name });
 });
 
 app.listen(3002, () => {
