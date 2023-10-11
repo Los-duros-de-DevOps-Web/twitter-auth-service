@@ -47,6 +47,12 @@ app.get("/current", (req, res) => {
   if (tokenPrin) return res.status(200).json(userP);
 });
 
+app.delete("/logout", (req, res) => {
+  tokenPrin = null;
+  userP = null;
+  res.status(200).json({ message: "Logout successfully" });
+});
+
 app.listen(3002, () => {
   console.log("Server is running on port 3002.");
 });
