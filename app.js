@@ -1,15 +1,23 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 
+const cors = require("cors");
+
 const app = express();
 app.use(express.json());
 
+app.use(
+  cors({
+    origin: "*",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  })
+);
 const jwt = require("jsonwebtoken");
 
 const prisma = require("./libs/prisma");
 
 let tokenPrin = null;
-let userIDPrin = null;
+let userP = null;
 
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
@@ -19,6 +27,7 @@ app.post("/login", async (req, res) => {
     return res.status(400).json({ error: "Invalid email or password" });
 
   const validPassword = await bcrypt.compare(password, user.hashedPassword);
+
   if (!validPassword)
     return res.status(400).json({ error: "Invalid email or password" });
 
@@ -30,12 +39,12 @@ app.post("/login", async (req, res) => {
     process.env.NEXTAUTH_JWT_SECRET
   );
   tokenPrin = token;
-  userIDPrin = uId;
-  res.json({ token, email: user.email, name: user.name });
+  userP = user;
+  res.json({ token, user: user });
 });
 
-app.get("/token", (req, res) => {
-  res.json({ token: tokenPrin, userId: userIDPrin });
+app.get("/current", (req, res) => {
+  if (tokenPrin) return res.status(200).json(userP);
 });
 
 app.listen(3002, () => {
