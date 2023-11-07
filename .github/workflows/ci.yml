@@ -32,7 +32,7 @@ jobs:
         with:
           username: ${{ secrets.AZURE_ACR_USERNAME }}
           password: ${{ secrets.AZURE_ACR_PASSWORD }}
-          login-server: ${{ secrets.ACR_NAME }}.azurecr.io
+          login-server: ${{ secrets.ACR_NAME }}
           
       - name: Build and push Docker images
         if: github.event_name == 'push'
@@ -41,5 +41,5 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.ACR_NAME }}.azurecr.io/twitter-auth-service:latest
+          tags: ${{ secrets.ACR_NAME }}/twitter-auth-service:latest
       
