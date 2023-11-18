@@ -1,11 +1,12 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
+const dotenv = require("dotenv");
 
 const cors = require("cors");
 
 const app = express();
 app.use(express.json());
-
+dotenv.config();
 app.use(
   cors({
     origin: "*",
@@ -21,10 +22,12 @@ let userP = null;
 
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
-
   const user = await prisma.user.findUnique({ where: { email } });
-  if (!user)
+  if (!user){
+    console.log("user not found");
     return res.status(400).json({ error: "Invalid email or password" });
+  }
+    
 
   const validPassword = await bcrypt.compare(password, user.hashedPassword);
 
